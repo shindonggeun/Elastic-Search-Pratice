@@ -1,0 +1,35 @@
+services:
+  elasticsearch_service:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.16.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node # 단일 노드 설정, 클러스터링이 아닌 단일 노드로 실행
+      - bootstrap.memory_lock=true # Elasticsearch 메모리 잠금을 활성화하여 성능 최적화
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # JVM의 힙 메모리를 최소/최대로 512MB로 제한
+      - xpack.security.enabled=false # x-pack 보안 기능 비활성화 (연습/개발 환경용)
+    ulimits: # 리소스 제한 설정
+      memlock: # 메모리 잠금을 위한 ulimit 설정 (Elasticsearch 성능 최적화에 필요)
+        soft: -1 # 소프트 리미트를 무제한으로 설정
+        hard: -1 # 하드 리미트를 무제한으로 설정
+    ports:
+      - "9200:9200" # Elasticsearch 기본 포트
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+
+  kibana_service:
+    image: docker.elastic.co/kibana/kibana:8.16.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601" # Kibana 기본 포트
+    depends_on:
+      - elasticsearch_service # Elasticsearch 서비스가 실행된 후 Kibana 서비스가 실행되도록 설정
+
+volumes:
+  es-data:
+
+networks:
+  donggeun-net:
+    name: donggeun-net
+    driver: bridge
