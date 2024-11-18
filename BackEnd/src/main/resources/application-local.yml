@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  elasticsearch:
+    uris: http://localhost:9200 # Elasticsearch URL 설정
+    connection-timeout: 5s # 연결 타임아웃 설정
+    socket-timeout: 10s # 소켓 타임아웃 설정
+
+logging:
+  level:
+    org.elasticsearch: DEBUG # Elasticsearch 클라이언트 로깅 레벨 설정
+    org.springframework.data.elasticsearch: DEBUG # Spring Data Elasticsearch 로깅 설정
